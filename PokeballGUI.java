@@ -10,37 +10,36 @@ public class PokeballGUI {
 
     public PokeballGUI() {
         pokeball = new PokeballTop();
-        label = new JLabel("Congratulations! You got an Ultra Ball", SwingConstants.CENTER);
+        label = new JLabel("You Got the Regular Ball", SwingConstants.CENTER); // Start with the Regular Ball
         label.setFont(new Font("Arial", Font.BOLD, 16));
 
-        // Initially set to Regular Ball
-        isUltraBall = false;
+        isUltraBall = false; // Ensure it starts as a Regular Ball
 
-        // Add MouseListener to handle color switching and Pokeball type change
+        // Mouse click toggles both the color and the message
         pokeball.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                // Toggle the Pokeball type
-                togglePokeballType();
-                // Switch the color
-                pokeball.switchColor();
+                togglePokeballState();
             }
         });
     }
 
-    private void togglePokeballType() {
-        // Toggle between Regular Ball and Ultra Ball
+    private void togglePokeballState() {
+        // Toggle state between Ultra Ball and Regular Ball
         isUltraBall = !isUltraBall;
 
-        // Update the label based on the new Pokeball type
-        String message = isUltraBall ? "You Got the Regular Ball" : "Congratulations! You got an Ultra Ball";
+        // Update the label message
+        String message = isUltraBall ? "Congratulations! You got an Ultra Ball" : "You Got the Regular Ball";
         label.setText(message);
+
+        // Set the corresponding image based on the state
+        pokeball.setUltraBallMode(isUltraBall);
     }
 
     public void createAndShowGUI() {
         JFrame frame = new JFrame("Pokeball GUI");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(300, 350); // Increased size to fit the label
+        frame.setSize(300, 350); 
 
         // Use BorderLayout to position elements
         frame.setLayout(new BorderLayout());

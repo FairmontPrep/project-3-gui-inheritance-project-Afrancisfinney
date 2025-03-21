@@ -3,41 +3,42 @@ import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
-import java.util.Random;
+
 class PokeballTop extends PokeballButton {
-    private BufferedImage topImage;
-    private BufferedImage alternateImage;
-    private boolean isAlternate;
+    private BufferedImage regularTopImage; // Regular Pokéball top
+    private BufferedImage ultraTopImage;   // Ultra Ball top
+    private boolean isUltraBall;
 
     public PokeballTop() {
         super();
         appendDescription("with a Color");
-        loadRandomImage();
+        loadImages();
+        isUltraBall = false; // Default to Regular Ball
     }
 
-    private void loadRandomImage() {
+    private void loadImages() {
         try {
-            topImage = ImageIO.read(new File("Color Fill 1.png"));
-            alternateImage = ImageIO.read(new File("Layer 3.png"));
+            regularTopImage = ImageIO.read(new File("Color Fill 1.png")); // Regular red Pokéball top
+            ultraTopImage = ImageIO.read(new File("Layer 3.png")); // Ultra Ball top
         } catch (IOException e) {
             e.printStackTrace();
         }
-        isAlternate = new Random().nextBoolean();
     }
 
-    public void switchColor() {
-        isAlternate = !isAlternate;
-        appendDescription(isAlternate ? "Switched to Alt Color" : "Switched to Default Color");
-        repaint();
+    public void setUltraBallMode(boolean isUltraBall) {
+        this.isUltraBall = isUltraBall;
+        repaint(); // Ensure repaint happens immediately after the change
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        if (isAlternate && alternateImage != null) {
-            g.drawImage(alternateImage, 0, 0, this);
-        } else if (topImage != null) {
-            g.drawImage(topImage, 0, 0, this);
+        
+        // Draw the correct top image based on whether it's an Ultra Ball or Regular Ball
+        if (isUltraBall && ultraTopImage != null) {
+            g.drawImage(ultraTopImage, 0, 0, this);
+        } else if (regularTopImage != null) {
+            g.drawImage(regularTopImage, 0, 0, this);
         }
     }
 }
