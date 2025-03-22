@@ -1,44 +1,49 @@
-import java.awt.Graphics;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 
-class PokeballTop extends PokeballButton {
-    private BufferedImage regularTopImage; // Regular Pokéball top
-    private BufferedImage ultraTopImage;   // Ultra Ball top
+
+class PokeballTop extends PokeballBase {
     private boolean isUltraBall;
+    private BufferedImage defaultImage;
+    private BufferedImage ultraBallImage;
 
     public PokeballTop() {
-        super();
-        appendDescription("with a Color");
+        super("", "Color Fill 1.png");
         loadImages();
-        isUltraBall = false; // Default to Regular Ball
+        isUltraBall = Math.random() < 0.5;
+        updateImage();
     }
 
     private void loadImages() {
         try {
-            regularTopImage = ImageIO.read(new File("Color Fill 1.png")); // Regular red Pokéball top
-            ultraTopImage = ImageIO.read(new File("Layer 3.png")); // Ultra Ball top
+            defaultImage = ImageIO.read(new File("Color Fill 1.png"));
+            ultraBallImage = ImageIO.read(new File("Layer 3.png"));
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Error loading images");
         }
     }
 
-    public void setUltraBallMode(boolean isUltraBall) {
-        this.isUltraBall = isUltraBall;
-        repaint(); // Ensure repaint happens immediately after the change
+    private void updateImage() {
+        if (isUltraBall) {
+            image = ultraBallImage;
+            description = "Ultra Ball Top Layer | Oh! You got a Ultra Pokeball";
+        } else {
+            image = defaultImage;
+            description = "Regular Top Layer | Oh! You got a Regular Pokeball";
+        }
+        repaint();
     }
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        
-        // Draw the correct top image based on whether it's an Ultra Ball or Regular Ball
-        if (isUltraBall && ultraTopImage != null) {
-            g.drawImage(ultraTopImage, 0, 0, this);
-        } else if (regularTopImage != null) {
-            g.drawImage(regularTopImage, 0, 0, this);
-        }
+    public void toggleBall() {
+        isUltraBall = !isUltraBall;
+        updateImage();
+    }
+
+    public boolean isUltraBall() {
+        return isUltraBall;
     }
 }

@@ -4,55 +4,57 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class PokeballGUI {
-    private PokeballTop pokeball;
-    private JLabel label;
-    private boolean isUltraBall;
+    private PokeballBackground background;
+    private PokeballBase bottom;
+    private PokeballTop top;
+    private JTextArea label;
 
     public PokeballGUI() {
-        pokeball = new PokeballTop();
-        label = new JLabel("You Got the Regular Ball", SwingConstants.CENTER); // Start with the Regular Ball
-        label.setFont(new Font("Arial", Font.BOLD, 16));
-
-        isUltraBall = false; // Ensure it starts as a Regular Ball
-
-        // Mouse click toggles both the color and the message
-        pokeball.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                togglePokeballState();
-            }
-        });
-    }
-
-    private void togglePokeballState() {
-        // Toggle state between Ultra Ball and Regular Ball
-        isUltraBall = !isUltraBall;
-
-        // Update the label message
-        String message = isUltraBall ? "Congratulations! You got an Ultra Ball" : "You Got the Regular Ball";
-        label.setText(message);
-
-        // Set the corresponding image based on the state
-        pokeball.setUltraBallMode(isUltraBall);
-    }
-
-    public void createAndShowGUI() {
         JFrame frame = new JFrame("Pokeball GUI");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(300, 350); 
+        frame.setSize(340, 400);
+        frame.setLayout(null);
 
-        // Use BorderLayout to position elements
-        frame.setLayout(new BorderLayout());
-        frame.add(label, BorderLayout.NORTH);
-        frame.add(pokeball, BorderLayout.CENTER);
+        background = new PokeballBackground();
+        bottom = new PokeballBase("Bottom Layer | ", "Layer 2.png");
+        top = new PokeballTop();
+
+        background.setBounds(10, 10, 300, 300);
+        bottom.setBounds(10, 10, 300, 300);
+        top.setBounds(10, 10, 300, 300);
+
+        label = new JTextArea(getFullDescription());
+        label.setBounds(10, 310, 300, 50);
+        label.setFont(new Font("Arial", Font.BOLD, 12));
+        label.setWrapStyleWord(true);
+        label.setLineWrap(true);
+        label.setOpaque(false);
+        label.setEditable(false);
+        label.setFocusable(false);
+
+        frame.add(background);
+        frame.add(bottom);
+        frame.add(top);
+        frame.add(label);
+
+        label.setText(getFullDescription()); // Ensure updated message displays at startup
+
+        top.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                top.toggleBall();
+                label.setText(getFullDescription());
+            }
+        });
 
         frame.setVisible(true);
     }
 
+    private String getFullDescription() {
+        return background.getDescription() + bottom.getDescription() + top.getDescription();
+    }
+
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            PokeballGUI gui = new PokeballGUI();
-            gui.createAndShowGUI();
-        });
+        SwingUtilities.invokeLater(() -> new PokeballGUI());
     }
 }

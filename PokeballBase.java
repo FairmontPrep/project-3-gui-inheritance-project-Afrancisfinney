@@ -1,34 +1,26 @@
-import java.awt.Graphics;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
-import javax.swing.JPanel;
 
-abstract class PokeballBase extends JPanel {
-    private BufferedImage backgroundImage;
+class PokeballBase extends JPanel {
     protected String description;
+    protected BufferedImage image;
 
-    public PokeballBase() {
-        loadImage();
+    public PokeballBase(String desc, String imagePath) {
+        this.description = desc;
+        loadImage(imagePath);
+        setOpaque(false); 
     }
 
-    protected abstract void loadImage();
-
-    protected void setBackgroundImage(String filePath) {
+    private void loadImage(String imagePath) {
         try {
-            backgroundImage = ImageIO.read(new File(filePath));
+            image = ImageIO.read(new File(imagePath));
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Image not found: " + imagePath);
         }
-    }
-
-    protected BufferedImage getBackgroundImage() {
-        return backgroundImage;
-    }
-
-    protected void appendDescription(String text) {
-        description = (description == null) ? text : description + " " + text;
     }
 
     public String getDescription() {
@@ -38,8 +30,8 @@ abstract class PokeballBase extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        if (backgroundImage != null) {
-            g.drawImage(backgroundImage, 0, 0, this);
+        if (image != null) {
+            g.drawImage(image, 0, 0, this.getWidth(), this.getHeight(), this);
         }
     }
 }
